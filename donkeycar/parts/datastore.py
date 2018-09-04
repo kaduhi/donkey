@@ -185,8 +185,14 @@ class Tub(object):
         """
         json_data = {}
 
-        for key, val in data.items():
+        for key0, val in data.items():
+            key = key0
             typ = self.get_input_type(key)
+
+            if key == 'angle':
+                key = 'user/angle'
+            if key == 'throttle':
+                key = 'user/throttle'
 
             if typ in ['str', 'float', 'int', 'boolean']:
                 json_data[key] = val

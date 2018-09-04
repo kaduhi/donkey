@@ -178,6 +178,7 @@ class Joystick():
             if typev & 0x01:
                 button = self.button_map[number]
                 if button:
+                    #print("number="+str(number)+", button="+button+", value="+str(value))
                     self.button_states[button] = value
                     button_state = value
 
@@ -199,7 +200,8 @@ class JoystickController(object):
     def __init__(self, poll_delay=0.0,
                  max_throttle=1.0,
                  steering_axis='x',
-                 throttle_axis='rz',
+                 #throttle_axis='rz',
+                 throttle_axis='ry',
                  steering_scale=1.0,
                  throttle_scale=-1.0,
                  dev_fn='/dev/input/js0',
@@ -239,6 +241,7 @@ class JoystickController(object):
         try:
             self.js = Joystick(self.dev_fn)
             self.js.init()
+            self.js.show_map()
         except FileNotFoundError:
             print(self.dev_fn, "not found.")
             self.js = None
@@ -284,7 +287,8 @@ class JoystickController(object):
                 print("throttle", self.throttle)
                 self.on_throttle_changes()
 
-            if button == 'trigger' and button_state == 1:
+            #if button == 'trigger' and button_state == 1:
+            if button == 'select' and button_state == 1:
                 """
                 switch modes from:
                 user: human controlled steer and throttle
@@ -299,20 +303,35 @@ class JoystickController(object):
                     self.mode = 'user'
                 print('new mode:', self.mode)
 
-            if button == 'circle' and button_state == 1:
+            if button == 'tl' or button == 'tr':
+                """
+                turn recording off
+                """
+                #if self.js.button_states['tl'] == 0 and self.js.button_states['tr'] == 0:
+                #    self.recording = True
+                #else:
+                #    self.recording = False
+
+                self.recording = False
+
+                print('recording:', self.recording)
+
+            #if button == 'circle' and button_state == 1:
+            if button == 'b' and button_state == 1:
                 """
                 toggle recording on/off
                 """
                 if self.auto_record_on_throttle:
                     print('auto record on throttle is enabled.')
-                elif self.recording:
-                    self.recording = False
+                #elif self.recording:
+                #    self.recording = False
                 else:
                     self.recording = True
 
                 print('recording:', self.recording)
 
-            if button == 'triangle' and button_state == 1:
+            #if button == 'triangle' and button_state == 1:
+            if button == 'y' and button_state == 1:
                 """
                 increase max throttle setting
                 """
@@ -323,7 +342,8 @@ class JoystickController(object):
 
                 print('max_throttle:', self.max_throttle)
 
-            if button == 'cross' and button_state == 1:
+            #if button == 'cross' and button_state == 1:
+            if button == 'a' and button_state == 1:
                 """
                 decrease max throttle setting
                 """
@@ -334,35 +354,40 @@ class JoystickController(object):
 
                 print('max_throttle:', self.max_throttle)
 
-            if button == 'base' and button_state == 1:
+            #if button == 'base' and button_state == 1:
+            if button == 'dpad_up' and button_state == 1:
                 """
                 increase throttle scale
                 """
                 self.throttle_scale = round(min(0.0, self.throttle_scale + 0.05), 2)
                 print('throttle_scale:', self.throttle_scale)
 
-            if button == 'top2' and button_state == 1:
+            #if button == 'top2' and button_state == 1:
+            if button == 'dpad_down' and button_state == 1:
                 """
                 decrease throttle scale
                 """
                 self.throttle_scale = round(max(-1.0, self.throttle_scale - 0.05), 2)
                 print('throttle_scale:', self.throttle_scale)
 
-            if button == 'base2' and button_state == 1:
+            #if button == 'base2' and button_state == 1:
+            if button == 'dpad_left' and button_state == 1:
                 """
                 increase steering scale
                 """
                 self.steering_scale = round(min(1.0, self.steering_scale + 0.05), 2)
                 print('steering_scale:', self.steering_scale)
 
-            if button == 'pinkie' and button_state == 1:
+            #if button == 'pinkie' and button_state == 1:
+            if button == 'dpad_right' and button_state == 1:
                 """
                 decrease steering scale
                 """
                 self.steering_scale = round(max(0.0, self.steering_scale - 0.05), 2)
                 print('steering_scale:', self.steering_scale)
 
-            if button == 'top' and button_state == 1:
+            #if button == 'top' and button_state == 1:
+            if button == 'start' and button_state == 1:
                 """
                 toggle constant throttle
                 """
