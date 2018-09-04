@@ -1,0 +1,1 @@
+echo python manage.py train --tub data/tub_ --model models/mypilot_ --base_model models/mypilot_
